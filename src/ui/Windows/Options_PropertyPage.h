@@ -24,7 +24,6 @@ struct st_Opt_master_data {
   CSecString CurrentFile;
   CSecString UserBackupPrefix;
   CSecString UserBackupOtherLocation;
-  BOOL SaveImmediately;
   BOOL BackupBeforeSave;
   BOOL BackupPrefix;
   int BackupLocation;
@@ -142,7 +141,6 @@ public:
   inline CSecString &M_CurrentFile() {return m_OPTMD.CurrentFile;}
   inline CString &M_UserBackupPrefix() {return m_OPTMD.UserBackupPrefix;}
   inline CString &M_UserBackupOtherLocation() {return m_OPTMD.UserBackupOtherLocation;}
-  inline BOOL &M_SaveImmediately() {return m_OPTMD.SaveImmediately;}
   inline BOOL &M_BackupBeforeSave() {return m_OPTMD.BackupBeforeSave;}
   inline BOOL &M_BackupPrefix() {return m_OPTMD.BackupPrefix;}
   inline int &M_BackupLocation() {return m_OPTMD.BackupLocation;}

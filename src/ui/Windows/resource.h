@@ -400,7 +400,6 @@
 #define IDB_BROWSEALT_CLASSIC           562
 #define IDB_BROWSEALT_NEW               563
 #define IDB_BROWSEALT_NEW_D             564
-
 #define IDC_APPVERSION                  1000
 #define IDC_VERSION                     1001
 #define IDC_APPVERSION2                 1002

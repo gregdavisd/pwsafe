@@ -42,7 +42,6 @@ const XMLFileValidation::st_file_elements XMLFileValidation::m_file_elements[XLE
   {_T("PWUseSymbols"), {XLE_PREF_PWUSESYMBOLS, XLE_ENTRY_PWUSESYMBOLS}},
   {_T("PWUseUppercase"), {XLE_PREF_PWUSEUPPERCASE, XLE_ENTRY_PWUSEUPPERCASE}},
   {_T("PWMakePronounceable"), {XLE_PREF_PWMAKEPRONOUNCEABLE, XLE_ENTRY_PWMAKEPRONOUNCEABLE}},
-  {_T("SaveImmediately"), {XLE_PREF_SAVEIMMEDIATELY, 0}},
   {_T("SavePasswordHistory"), {XLE_PREF_SAVEPASSWORDHISTORY, 0}},
   {_T("ShowNotesDefault"), {XLE_PREF_SHOWNOTESDEFAULT, 0}},
   {_T("ShowPWDefault"), {XLE_PREF_SHOWPWDEFAULT, 0}},

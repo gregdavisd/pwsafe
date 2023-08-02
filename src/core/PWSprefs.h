@@ -97,7 +97,7 @@ public:
   enum BoolPrefs {AlwaysOnTop, ShowPWDefault,
     ShowPasswordInTree,
     SortAscending, // Obsoleted in 3.40 as moved to application config file
-    UseDefaultUser, SaveImmediately, PWUseLowercase, PWUseUppercase,
+    UseDefaultUser, PWUseLowercase, PWUseUppercase,
     PWUseDigits, PWUseSymbols, PWUseHexDigits, PWUseEasyVision,
     DontAskQuestion, DeleteQuestion, DCShowsPassword,
     DontAskMinimizeClearYesNo, // Obsoleted in 3.13 - replaced by 2 separate
@@ -262,10 +262,6 @@ public:
   // Default User information from supplied DB preference string
   void GetDefaultUserInfo(const StringX &sxDBPreferences,
                           bool &bIsDefUserSet, StringX &sxDefUserValue);
-
-  static bool LockCFGFile(const stringT &filename, stringT &locker);
-  static void UnlockCFGFile(const stringT &filename);
-  static bool IsLockedCFGFile(const stringT &filename);
 
   void ClearUnknownPrefs(); // Clear unknown preferences vectors
 

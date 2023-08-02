@@ -841,8 +841,7 @@ void DboxMain::InitPasswordSafe()
 
   m_ctlItemList.SetExtendedStyle(dw_ExtendedStyle);
   m_ctlItemList.Initialize();
-  m_ctlItemList.SetHighlightChanges(prefs->GetPref(PWSprefs::HighlightChanges) &&
-                                    !prefs->GetPref(PWSprefs::SaveImmediately));
+  m_ctlItemList.SetHighlightChanges(prefs->GetPref(PWSprefs::HighlightChanges));
 
   // Override default HeaderCtrl ID of 0
   m_LVHdrCtrl.SetDlgCtrlID(IDC_LIST_HEADER);
@@ -1495,7 +1494,6 @@ void DboxMain::OnDestroy()
   ::DestroyIcon(m_ClosedIcon);
   ::DestroyIcon(m_IndexIcon);
 
-  m_core.SafeUnlockCurFile();
 
   // Get rid of hotkey
   UnregisterHotKey(GetSafeHwnd(), PWS_HOTKEY_ID);
@@ -1986,26 +1984,19 @@ int DboxMain::GetAndCheckPassword(const StringX &filename,
 
     // This dialog's setting of read-only overrides file dialog
     bool bWantReadOnly = m_pPasskeyEntryDlg->IsReadOnly();  // Requested state
-    bool bWasReadOnly = m_core.IsReadOnly();                // Previous state
 
     // Set read-only mode if user explicitly requested it OR
     // if we failed to create a lock file.
     switch (index) {
       case GCP_FIRST: // if first, then m_IsReadOnly is set in Open
-        m_core.SetReadOnly(bWantReadOnly || !m_core.LockFile(curFile.c_str(), locker));
+        m_core.SetReadOnly(bWantReadOnly);
         break;
       case GCP_NORMAL:
-        if (!bWantReadOnly) // !first, lock if !bIsReadOnly
-          m_core.SetReadOnly(!m_core.LockFile(curFile.c_str(), locker));
-        else
           m_core.SetReadOnly(bWantReadOnly);
         break;
       case GCP_RESTORE:
+        break;
       case GCP_WITHEXIT:
-        // Only lock if DB was R-O and now isn't otherwise lockcount is
-        // increased too much and the lock file won't be deleted on close
-        if (!bWantReadOnly && bWasReadOnly)
-          m_core.SetReadOnly(!m_core.LockFile(curFile.c_str(), locker));
         break;
       case GCP_CHANGEMODE:
       default:
@@ -2447,7 +2438,6 @@ bool DboxMain::RestoreWindowsData(bool bUpdateWindows, bool bShow)
         rc_readdatabase = PWScore::NOT_SUCCESS;
         break;
       case PWScore::USER_EXIT:
-        m_core.SafeUnlockCurFile();
         PostQuitMessage(0);
         return false;
       default:
@@ -2882,7 +2872,7 @@ void DboxMain::TellUserAboutExpiredPasswords()
       dlg.DoModal();
 
       // If user has changed anything and has "Save database immediately after any change" - save
-      if (m_core.HasDBChanged() && PWSprefs::GetInstance()->GetPref(PWSprefs::SaveImmediately)) {
+      if (m_core.HasDBChanged() ) {
         SaveImmediately();
       }
     }

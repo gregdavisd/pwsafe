@@ -403,7 +403,7 @@ void CPasskeyEntry::ProcessPhrase()
     // is disabled -> don't need to worry about that.
     BOOL bIsRO = GetMainDlg()->IsDBReadOnly();
     if ((m_index == GCP_RESTORE || m_index == GCP_WITHEXIT) && 
-        (m_PKE_ReadOnly != bIsRO) && pws_os::IsLockedFile(LPCWSTR(m_filespec))) {
+        (m_PKE_ReadOnly != bIsRO) ) {
       // false means "don't prompt use for password", as we just got it.
       bool brc = GetMainDlg()->ChangeMode(false); 
 

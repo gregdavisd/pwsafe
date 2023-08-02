@@ -67,7 +67,6 @@ public:
     SUCCESS = 0,
     FAILURE = 1,
     USER_DECLINED_SAVE = 2,
-    CANT_GET_LOCK = 3,
     DB_HAS_CHANGED = 4,
     CANT_OPEN_FILE = PWSfile::CANT_OPEN_FILE, // -10
     USER_CANCEL = -9,                         // -9
@@ -243,20 +242,6 @@ public:
                              int &numImported, int &numSkipped, int &numRenamed,
                              UINT &uiReasonCode, CReport &rpt, Command *&pcommand);
 
-  // Locking files open in R/W mode
-  bool LockFile(const stringT &filename, stringT &locker);
-  bool IsLockedFile(const stringT &filename) const;
-  void UnlockFile(const stringT &filename);
-
-  void SafeUnlockCurFile(); // unlocks current file iff we locked it.
-
-  // Following 3 routines only for SaveAs to use a temporary lock handle
-  // LockFile2, UnLockFile2 & MoveLock
-  bool LockFile2(const stringT &filename, stringT &locker);
-  void UnlockFile2(const stringT &filename);
-  void MoveLock()
-  {m_lockFileHandle = m_lockFileHandle2; m_lockFileHandle2 = INVALID_HANDLE_VALUE;}
-
   // Set application data
   void SetApplicationNameAndVersion(const stringT &appName, DWORD dwMajorMinor,
                                     DWORD dwBuildRevision = 0);
@@ -374,7 +359,7 @@ public:
   bool HasGroupDisplayChanged() const;
   bool HasRUEListChanged() const;
 
-  bool ChangeMode(stringT &locker, int &iErrorCode);
+  bool ChangeMode(int &iErrorCode);
   PWSFileSig& GetCurrentFileSig() {return *m_pFileSig;}
 
   // Callback to be notified if the database changes
@@ -559,8 +544,8 @@ private:
   static unsigned char m_session_key[32];
   static bool m_session_initialized;
 
-  HANDLE m_lockFileHandle;
-  HANDLE m_lockFileHandle2;
+//  HANDLE m_lockFileHandle;
+//  HANDLE m_lockFileHandle2;
 
   stringT m_AppNameAndVersion;
   PWSfile::VERSION m_ReadFileVersion;

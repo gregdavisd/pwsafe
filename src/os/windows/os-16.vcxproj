@@ -100,18 +100,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\$(PWSLib)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\$(PWSLib)64\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Demo|Win32'">..\$(PWSLib)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Demo|x64'">..\$(PWSLib)64\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\$(PWSLib)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\$(PWSLib)64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\$(PWSObj)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\$(PWSObj)64\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Demo|Win32'">..\$(PWSObj)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Demo|x64'">..\$(PWSObj)64\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\$(PWSObj)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\$(PWSObj)64\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(PWSLib)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(PWSLib)64\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Demo|Win32'">$(PWSLib)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Demo|x64'">$(PWSLib)64\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(PWSLib)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(PWSLib)64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(PWSObj)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(PWSObj)64\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Demo|Win32'">$(PWSObj)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Demo|x64'">$(PWSObj)64\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(PWSObj)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(PWSObj)64\$(ProjectName)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">os</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">os</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">os</TargetName>
@@ -128,10 +128,10 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeaderOutputFile>..\$(PWSObj)\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\$(PWSObj)\$(ProjectName)/</AssemblerListingLocation>
-      <ObjectFileName>..\$(PWSObj)\$(ProjectName)/</ObjectFileName>
-      <ProgramDataBaseFileName>..\$(PWSObj)\$(ProjectName)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(PWSObj)\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(PWSObj)\$(ProjectName)/</AssemblerListingLocation>
+      <ObjectFileName>$(PWSObj)\$(ProjectName)/</ObjectFileName>
+      <ProgramDataBaseFileName>$(PWSObj)\$(ProjectName)/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -143,7 +143,7 @@
       <Culture>0x040d</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\$(PWSLib)\os.lib</OutputFile>
+      <OutputFile>$(PWSLib)\os.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -156,10 +156,10 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeaderOutputFile>..\$(PWSObj)64\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\$(PWSObj)64\$(ProjectName)/</AssemblerListingLocation>
-      <ObjectFileName>..\$(PWSObj)64\$(ProjectName)/</ObjectFileName>
-      <ProgramDataBaseFileName>..\$(PWSObj)64\$(ProjectName)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(PWSObj)64\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(PWSObj)64\$(ProjectName)/</AssemblerListingLocation>
+      <ObjectFileName>$(PWSObj)64\$(ProjectName)/</ObjectFileName>
+      <ProgramDataBaseFileName>$(PWSObj)64\$(ProjectName)/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -170,7 +170,7 @@
       <Culture>0x040d</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\$(PWSLib)64\os.lib</OutputFile>
+      <OutputFile>$(PWSLib)64\os.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -181,10 +181,10 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeaderOutputFile>..\$(PWSObj)\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\$(PWSObj)\$(ProjectName)/</AssemblerListingLocation>
-      <ObjectFileName>..\$(PWSObj)\$(ProjectName)/</ObjectFileName>
-      <ProgramDataBaseFileName>..\$(PWSObj)\$(ProjectName)/$(ProjectName).pdb</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(PWSObj)\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(PWSObj)\$(ProjectName)/</AssemblerListingLocation>
+      <ObjectFileName>$(PWSObj)\$(ProjectName)/</ObjectFileName>
+      <ProgramDataBaseFileName>$(PWSObj)\$(ProjectName)/$(ProjectName).pdb</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -196,7 +196,7 @@
       <Culture>0x040d</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\$(PWSLib)\os.lib</OutputFile>
+      <OutputFile>$(PWSLib)\os.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -207,10 +207,10 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeaderOutputFile>..\$(PWSObj)64\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\$(PWSObj)64\$(ProjectName)/</AssemblerListingLocation>
-      <ObjectFileName>..\$(PWSObj)64\$(ProjectName)/</ObjectFileName>
-      <ProgramDataBaseFileName>..\$(PWSObj)64\$(ProjectName)/$(ProjectName).pdb</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(PWSObj)64\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(PWSObj)64\$(ProjectName)/</AssemblerListingLocation>
+      <ObjectFileName>$(PWSObj)64\$(ProjectName)/</ObjectFileName>
+      <ProgramDataBaseFileName>$(PWSObj)64\$(ProjectName)/$(ProjectName).pdb</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -222,7 +222,7 @@
       <Culture>0x040d</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\$(PWSLib)64\os.lib</OutputFile>
+      <OutputFile>$(PWSLib)64\os.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -235,10 +235,10 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeaderOutputFile>..\$(PWSObj)\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\$(PWSObj)\$(ProjectName)/</AssemblerListingLocation>
-      <ObjectFileName>..\$(PWSObj)\$(ProjectName)/</ObjectFileName>
-      <ProgramDataBaseFileName>..\$(PWSObj)\$(ProjectName)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(PWSObj)\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(PWSObj)\$(ProjectName)/</AssemblerListingLocation>
+      <ObjectFileName>$(PWSObj)\$(ProjectName)/</ObjectFileName>
+      <ProgramDataBaseFileName>$(PWSObj)\$(ProjectName)/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -250,7 +250,7 @@
       <Culture>0x040d</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\$(PWSLib)\os.lib</OutputFile>
+      <OutputFile>$(PWSLib)\os.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -263,10 +263,10 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeaderOutputFile>..\$(PWSObj)64\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\$(PWSObj)64\$(ProjectName)/</AssemblerListingLocation>
-      <ObjectFileName>..\$(PWSObj)64\$(ProjectName)/</ObjectFileName>
-      <ProgramDataBaseFileName>..\$(PWSObj)64\$(ProjectName)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(PWSObj)64\$(ProjectName)/os.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(PWSObj)64\$(ProjectName)/</AssemblerListingLocation>
+      <ObjectFileName>$(PWSObj)64\$(ProjectName)/</ObjectFileName>
+      <ProgramDataBaseFileName>$(PWSObj)64\$(ProjectName)/</ProgramDataBaseFileName>
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -277,7 +277,7 @@
       <Culture>0x040d</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\$(PWSLib)64\os.lib</OutputFile>
+      <OutputFile>$(PWSLib)64\os.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>

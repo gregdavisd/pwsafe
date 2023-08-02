@@ -36,15 +36,13 @@ class CXMLprefs
   // Construction & Destruction
 public:
   CXMLprefs(const stringT &configFile)
-  : m_pXMLDoc(nullptr), m_csConfigFile(configFile), m_bIsLocked(false) {}
+  : m_pXMLDoc(nullptr), m_csConfigFile(configFile) {}
 
   ~CXMLprefs() { UnloadXML(); }
 
   // Implementation
   bool XML_Load();
   bool XML_Store(const stringT &csBaseKeyName);
-  bool Lock(stringT &locker); // if fails, locker points to culprit
-  void Unlock();
 
   int Get(const stringT &csBaseKeyName, const stringT &csValueName,
           int iDefaultValue);
@@ -89,7 +87,6 @@ private:
 
   pugi::xml_document *m_pXMLDoc;
   stringT m_csConfigFile;
-  bool m_bIsLocked;
 
   // CreateXML - bLoad will skip creation of root element
   bool CreateXML(bool bLoad);

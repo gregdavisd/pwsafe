@@ -25,11 +25,6 @@ namespace pws_os {
   extern bool CopyAFile(const stringT &from, const stringT &to); // creates dirs as needed!
   extern bool DeleteAFile(const stringT &filename);
   extern void FindFiles(const stringT &filter, std::vector<stringT> &res);
-  extern bool LockFile(const stringT &filename, stringT &locker,
-                       HANDLE &lockFileHandle);
-  extern bool IsLockedFile(const stringT &filename);
-  extern void UnlockFile(const stringT &filename, HANDLE &lockFileHandle);
-  extern void TryUnlockFile(const stringT &filename, HANDLE &lockFileHandle);
 
   extern std::FILE *FOpen(const stringT &filename, const TCHAR *mode);
   extern int FClose(std::FILE *fd, const bool &bIsWrite);

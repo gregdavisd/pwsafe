@@ -23,7 +23,7 @@ COptions_PropertySheet::COptions_PropertySheet(UINT nID, CWnd* pParent,
   m_bIsModified(false), m_bChanged(false),
   m_bRefreshViews(false), m_bSaveGroupDisplayState(false), m_bUpdateShortcuts(false),
   m_bCheckExpired(false),
-  m_save_bSaveImmediately(TRUE), m_save_bHighlightChanges(FALSE),
+   m_save_bHighlightChanges(FALSE),
   m_save_bPreExpiryWarn(FALSE), m_save_bShowUsernameInTree(FALSE), 
   m_save_bShowPasswordInTree(FALSE), m_save_bExplorerTypeTree(FALSE), 
   m_save_bLockOnWindowLock(FALSE), m_bStartupShortcutExists(FALSE),
@@ -132,8 +132,6 @@ void COptions_PropertySheet::SetupInitialValues()
   // Backup Data
   CString cs_backupPrefix, cs_backupDir;
   m_OPTMD.CurrentFile = GetMainDlg()->GetCurFile().c_str();
-  m_OPTMD.SaveImmediately = m_save_bSaveImmediately = 
-      prefs->GetPref(PWSprefs::SaveImmediately) ? TRUE : FALSE;
   m_OPTMD.BackupBeforeSave =
       prefs->GetPref(PWSprefs::BackupBeforeEverySave) ? TRUE : FALSE;
   cs_backupPrefix =
@@ -348,12 +346,11 @@ void COptions_PropertySheet::UpdateCopyPreferences()
   prefs->SetPref(PWSprefs::WindowTransparency,
                   m_OPTMD.PercentTransparency, true);
   
-  // Changes are highlighted only if "highlight changes" is true and 
-  // "save immediately" is false.
+  // Changes are highlighted only if "highlight changes" 
   // So only need to refresh view if the new master password is different
   // from the original one.
-  m_bRefreshViews = (m_save_bHighlightChanges && !m_save_bSaveImmediately) != 
-                    (m_OPTMD.HighlightChanges && !m_OPTMD.SaveImmediately);
+  m_bRefreshViews = (m_save_bHighlightChanges ) != 
+                    (m_OPTMD.HighlightChanges );
 
   // Misc
   prefs->SetPref(PWSprefs::DeleteQuestion,
@@ -418,8 +415,6 @@ void COptions_PropertySheet::UpdateCopyPreferences()
 
   // Now update database preferences
   // In PropertyPage alphabetic order
-  prefs->SetPref(PWSprefs::SaveImmediately,
-                 m_OPTMD.SaveImmediately == TRUE, true);
 
   prefs->SetPref(PWSprefs::ShowPWDefault,
                  m_OPTMD.ShowPasswordInEdit == TRUE, true);

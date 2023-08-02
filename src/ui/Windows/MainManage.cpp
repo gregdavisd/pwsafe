@@ -201,10 +201,7 @@ int DboxMain::RestoreSafe()
       */
       return PWScore::USER_CANCEL;
   }
-
-  // unlock the file we're leaving
-  m_core.SafeUnlockCurFile();
-
+ 
   // Reset core and clear ALL associated data
   m_core.ReInit();
 
@@ -374,10 +371,8 @@ void DboxMain::OnOptions()
       }
     }
 
-    m_ctlItemList.SetHighlightChanges(pOptionsPS->HighlightChanges() &&
-      !pOptionsPS->SaveImmediately());
-    m_ctlItemTree.SetHighlightChanges(pOptionsPS->HighlightChanges() &&
-      !pOptionsPS->SaveImmediately());
+    m_ctlItemList.SetHighlightChanges(pOptionsPS->HighlightChanges());
+    m_ctlItemTree.SetHighlightChanges(pOptionsPS->HighlightChanges());
 
     if (pOptionsPS->RefreshViews()) {
       RefreshViews();

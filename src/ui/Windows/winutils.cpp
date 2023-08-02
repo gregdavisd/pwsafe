@@ -185,7 +185,6 @@ bool WinUtil::PerformConfigMigration()
   if (rc) {
     // That worked, now remove us from the old one config file
     // in the Installation directory
-    newXMLConfig.Unlock();
 
     // Since we now have new config file, remove host/user from old.
     if (!oldXMLConfig.XML_Load()) {
@@ -247,8 +246,6 @@ bool WinUtil::PerformConfigMigration()
 
 exit:
   // Clean up
-  newXMLConfig.Unlock();
-  oldXMLConfig.Unlock();
 
   // Set config file
   if (bRetVal)

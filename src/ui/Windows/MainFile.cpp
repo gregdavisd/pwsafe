@@ -432,12 +432,7 @@ int DboxMain::NewFile(StringX &newfilename)
 
   // Clear application data
   ClearAppData();
-  m_core.SafeUnlockCurFile();
   m_core.SetCurFile(newfilename);
-
-  // Now lock the new file
-  std::wstring locker(L""); // null init is important here
-  m_core.LockFile(newfilename.c_str(), locker);
 
   m_core.SetReadOnly(false); // new file can't be read-only...
   m_core.NewFile(sPasskey);
@@ -497,7 +492,6 @@ int DboxMain::Close(const bool bTrySave)
   if (m_bUnsavedDisplayed)
     OnShowUnsavedEntries();
 
-  m_core.SafeUnlockCurFile();
   m_core.SetCurFile(L"");
 
   SetDBInitiallyRO(false);
@@ -735,11 +729,7 @@ int DboxMain::Open(const StringX &sx_Filename, const bool bReadOnly,  const bool
 
   // Set flag to stop being asked again (only if rc == PWScore::USER_DECLINED_SAVE)
   m_bUserDeclinedSave = true;
-
-  // If we were using a different file, unlock it do this before
-  // GetAndCheckPassword() as that routine gets a lock on the new file
-  m_core.SafeUnlockCurFile();
-
+ 
   const int flags = ((bReadOnly ? GCP_READONLY : 0) | (bHideReadOnly ? GCP_HIDEREADONLY : 0) |
                      (m_bDBInitiallyRO ? GCP_FORCEREADONLY : 0));
   rc = GetAndCheckPassword(sx_Filename, passkey, GCP_NORMAL, flags);  // OK, CANCEL, HELP
@@ -910,9 +900,8 @@ void DboxMain::PostOpenProcessing()
   // Make row height update
   m_ctlItemList.UpdateRowHeight(true);
 
-  // Set highlighting - need to do it here as SaveImmediately is a DB preference
-  m_ctlItemTree.SetHighlightChanges(PWSprefs::GetInstance()->GetPref(PWSprefs::HighlightChanges) &&
-                                    !PWSprefs::GetInstance()->GetPref(PWSprefs::SaveImmediately));
+  // Set highlighting - 
+  m_ctlItemTree.SetHighlightChanges(PWSprefs::GetInstance()->GetPref(PWSprefs::HighlightChanges));
 
   RefreshViews();
   SetInitialDatabaseDisplay();
@@ -1432,17 +1421,6 @@ int DboxMain::SaveAs()
       return PWScore::USER_CANCEL;
   }
 
-  std::wstring locker(L""); // null init is important here
-  // Note: We have to lock the new file before releasing the old (on success)
-  if (!m_core.LockFile2(newfile.c_str(), locker)) {
-    CGeneralMsgBox gmb;
-    cs_temp.Format(IDS_FILEISLOCKED, static_cast<LPCWSTR>(newfile.c_str()),
-                   static_cast<LPCWSTR>(locker.c_str()));
-    cs_title.LoadString(IDS_FILELOCKERROR);
-    gmb.MessageBox(cs_temp, cs_title, MB_OK | MB_ICONWARNING);
-    return PWScore::CANT_OPEN_FILE;
-  }
-
   // Save file UUID, clear it to generate new one, restore if necessary
   pws_os::CUUID file_uuid = m_core.GetFileUUID();
   m_core.ClearFileUUID();
@@ -1464,7 +1442,6 @@ int DboxMain::SaveAs()
 
   if (rc != PWScore::SUCCESS) {
     m_core.SetFileUUID(file_uuid); // restore uuid after failed save-as
-    m_core.UnlockFile2(newfile.c_str());
     DisplayFileWriteError(rc, newfile);
 
     BlockLogoffShutdown(true);
@@ -1473,12 +1450,7 @@ int DboxMain::SaveAs()
   }
 
   BlockLogoffShutdown(false);
-
-  m_core.SafeUnlockCurFile();
-
-  // Move the newfile lock to the right place
-  m_core.MoveLock();
-
+ 
   m_core.SetCurFile(newfile);
   m_titlebar = PWSUtil::NormalizeTTT(L"Password Safe - " +
                                      m_core.GetCurFile()).c_str();
@@ -2943,9 +2915,8 @@ bool DboxMain::ChangeMode(bool promptUser)
   } // R-O -> R/W
 
   bool rc(true);
-  std::wstring locker = L"";
   int iErrorCode(0);
-  bool brc = m_core.ChangeMode(locker, iErrorCode);
+  bool brc = m_core.ChangeMode(iErrorCode);
   if (brc) {
     UpdateStatusBar();
     UpdateToolBarROStatus(!bWasRO);
@@ -2965,25 +2936,6 @@ bool DboxMain::ChangeMode(bool promptUser)
           uiMsg = IDS_CM_FAIL_REASON3;
           break;
 
-        case PWScore::CANT_GET_LOCK:
-        {
-          CString cs_user_and_host, cs_PID;
-          cs_user_and_host = (CString)locker.c_str();
-          int i_pid = cs_user_and_host.ReverseFind(L':');
-          if (i_pid > -1) {
-            // If PID present then it is ":%08d" = 9 chars in length
-            ASSERT((cs_user_and_host.GetLength() - i_pid) == 9);
-            cs_PID.Format(IDS_PROCESSID, static_cast<LPCWSTR>(cs_user_and_host.Right(8)));
-            cs_user_and_host = cs_user_and_host.Left(i_pid);
-          } else {
-            cs_PID = L"";
-          }
-
-          cs_msg.Format(IDS_CM_FAIL_REASON1, static_cast<LPCWSTR>(cs_user_and_host),
-                        static_cast<LPCWSTR>(cs_PID));
-          bInUse = true;
-          break;
-        }
         case PWSfile::CANT_OPEN_FILE:
           uiMsg = IDS_CM_FAIL_REASON4;
           break;
@@ -3335,9 +3287,8 @@ CString DboxMain::ShowCompareResults(const StringX sx_Filename1,
   if (CmpRes.m_OriginalDBChanged) {
     // We didn't save after each change within the ComapreResults dialog
     // So potentially do it now
-    if (PWSprefs::GetInstance()->GetPref(PWSprefs::SaveImmediately)) {
+
       SaveImmediately();
-    }
 
     // Have to update views as user may have changed/added entries
     FixListIndexes();
@@ -4139,9 +4090,7 @@ void DboxMain::CleanUpAndExit()
       prefs->GetPref(PWSprefs::ClearClipboardOnExit)) {
     ClearClipboardData();
   }
-
-  m_core.SafeUnlockCurFile();
-
+ 
   // Reset core and clear ALL associated data
   m_core.ReInit();
 

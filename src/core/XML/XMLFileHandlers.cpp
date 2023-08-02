@@ -197,9 +197,6 @@ void XMLFileHandlers::ProcessEndElement(const int icurrent_element)
     case XLE_PREF_USEDEFAULTUSER:
       bpref = PWSprefs::UseDefaultUser;
       break;
-    case XLE_PREF_SAVEIMMEDIATELY:
-      bpref = PWSprefs::SaveImmediately;
-      break;
     case XLE_PREF_PWUSELOWERCASE:
       if (m_bPolicyBeingProcessed)
         if (m_sxElemContent == _T("1"))

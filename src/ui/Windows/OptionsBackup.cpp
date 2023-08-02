@@ -50,7 +50,6 @@ COptionsBackup::COptionsBackup(CWnd *pParent, st_Opt_master_data *pOPTMD)
   m_BackupSuffix = M_BackupSuffix();
   m_BackupLocation = M_BackupLocation();
   m_UserBackupOtherLocation = M_UserBackupOtherLocation();
-  m_SaveImmediately = M_SaveImmediately();
   m_BackupBeforeSave = M_BackupBeforeSave();
   m_BackupPrefix = M_BackupPrefix();
   m_MaxNumIncBackups = M_MaxNumIncBackups();
@@ -76,7 +75,6 @@ void COptionsBackup::DoDataExchange(CDataExchange* pDX)
   COptions_PropertyPage::DoDataExchange(pDX);
 
   //{{AFX_DATA_MAP(COptionsBackup)
-  DDX_Check(pDX, IDC_SAVEIMMEDIATELY, m_SaveImmediately);
   DDX_Check(pDX, IDC_BACKUPBEFORESAVE, m_BackupBeforeSave);
   DDX_Radio(pDX, IDC_DFLTBACKUPPREFIX, m_BackupPrefix); // only first!
   DDX_Text(pDX, IDC_USERBACKUPPREFIXVALUE, m_UserBackupPrefix);
@@ -85,12 +83,10 @@ void COptionsBackup::DoDataExchange(CDataExchange* pDX)
   DDX_Text(pDX, IDC_USERBACKUPOTHRLOCATIONVALUE, m_UserBackupOtherLocation);
   DDX_Text(pDX, IDC_BACKUPMAXINC, m_MaxNumIncBackups);
 
-  DDX_Control(pDX, IDC_SAVEIMMEDIATELY, m_chkbox);
 
   DDX_Control(pDX, IDC_BACKUPBEFORESAVEHELP, m_Help1);
   DDX_Control(pDX, IDC_USERBACKUPOTHERLOCATIONHELP, m_Help2);
   DDX_Control(pDX, IDC_USERBACKUPOTHERLOCATIONHELP2, m_Help3);
-  DDX_Control(pDX, IDC_SAVEIMMEDIATELYHELP, m_Help4);
   //}}AFX_DATA_MAP
 }
 
@@ -117,9 +113,6 @@ BOOL COptionsBackup::OnInitDialog()
 {
   COptions_PropertyPage::OnInitDialog();
 
-  m_chkbox.SetTextColour(CR_DATABASE_OPTIONS);
-  m_chkbox.ResetBkgColour(); //Use current window's background
-
   if (GetMainDlg()->IsDBOpen() && !GetMainDlg()->IsDBReadOnly()) {
     GetDlgItem(IDC_STATIC_DB_PREFS_RO_WARNING)->ShowWindow(SW_HIDE);
   }
@@ -132,7 +125,6 @@ BOOL COptionsBackup::OnInitDialog()
     cs_Preference_Warning.Format(IDS_STATIC_DB_PREFS_RO_WARNING, static_cast<LPCWSTR>(cs_temp));
     GetDlgItem(IDC_STATIC_DB_PREFS_RO_WARNING)->SetWindowText(cs_Preference_Warning);
 
-    GetDlgItem(IDC_SAVEIMMEDIATELY)->EnableWindow(FALSE);
   }
 
   if (m_backupsuffix_cbox.GetCount() == 0) {
@@ -175,13 +167,11 @@ BOOL COptionsBackup::OnInitDialog()
     m_Help1.Init(IDB_QUESTIONMARK);
     m_Help2.Init(IDB_QUESTIONMARK);
     m_Help3.Init(IDB_QUESTIONMARK);
-    m_Help4.Init(IDB_QUESTIONMARK);
 
     // Note naming convention: string IDS_xxx corresponds to control IDC_xxx_HELP
     AddTool(IDC_BACKUPBEFORESAVEHELP, IDS_BACKUPBEFORESAVE);
     AddTool(IDC_USERBACKUPOTHERLOCATIONHELP, IDS_USERBACKUPOTHERLOCATION);
     AddTool(IDC_USERBACKUPOTHERLOCATIONHELP2, IDS_USERBACKUPOTHERLOCATION2);
-    AddTool(IDC_SAVEIMMEDIATELYHELP, IDS_SAVEIMMEDIATELY);
     ActivateToolTip();
   } else {
     m_Help1.EnableWindow(FALSE);
@@ -190,8 +180,6 @@ BOOL COptionsBackup::OnInitDialog()
     m_Help2.ShowWindow(SW_HIDE);
     m_Help3.EnableWindow(FALSE);
     m_Help3.ShowWindow(SW_HIDE);
-    m_Help4.EnableWindow(FALSE);
-    m_Help4.ShowWindow(SW_HIDE);
   }
 
   return TRUE;  // return TRUE unless you set the focus to a control
@@ -206,7 +194,6 @@ LRESULT COptionsBackup::OnQuerySiblings(WPARAM wParam, LPARAM )
     case PP_DATA_CHANGED:
       if (M_UserBackupPrefix()        != m_UserBackupPrefix        ||
           M_UserBackupOtherLocation() != m_UserBackupOtherLocation ||
-          M_SaveImmediately()         != m_SaveImmediately         ||
           M_BackupBeforeSave()        != m_BackupBeforeSave        ||
           M_BackupPrefix()            != m_BackupPrefix            ||
           M_BackupSuffix()            != m_BackupSuffix            ||
@@ -234,7 +221,6 @@ BOOL COptionsBackup::OnApply()
   M_BackupSuffix() = m_BackupSuffix;
   M_BackupLocation() = m_BackupLocation;
   M_UserBackupOtherLocation() = m_UserBackupOtherLocation;
-  M_SaveImmediately() = m_SaveImmediately;
   M_BackupBeforeSave() = m_BackupBeforeSave;
   M_BackupPrefix() = m_BackupPrefix;
   M_MaxNumIncBackups() = m_MaxNumIncBackups;
@@ -609,10 +595,6 @@ HBRUSH COptionsBackup::OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor)
 
   // Database preferences - controls + associated static text
   switch (pWnd->GetDlgCtrlID()) {
-    case IDC_SAVEIMMEDIATELY:
-      pDC->SetTextColor(CR_DATABASE_OPTIONS);
-      pDC->SetBkMode(TRANSPARENT);
-      break;
     case IDC_STATIC_PREFERENCES:
       pDC->SetTextColor(RGB(0, 0, 255));
       pDC->SetBkMode(TRANSPARENT);

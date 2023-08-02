@@ -75,11 +75,9 @@ void DboxMain::DatabaseModified(bool bChanged)
   if (bFindBarShown)
     SetFindToolBar(false);
 
-  // Save Immediately if user requested it
-  if (PWSprefs::GetInstance()->GetPref(PWSprefs::SaveImmediately)) {
+  // Save Immediately 
     if (SaveImmediately() == PWScore::SUCCESS)
       bChanged = false;
-  }
 
   // Update menu/toolbar according to change state
   ChangeOkUpdate();

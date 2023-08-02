@@ -28,25 +28,6 @@
 /////////////////////////////////////////////////////////////////////////////
 // CXMLprefs
 
-bool CXMLprefs::Lock(stringT &locker)
-{
-  locker = _T("");
-  int tries = 10;
-  do {
-    m_bIsLocked = PWSprefs::LockCFGFile(m_csConfigFile, locker);
-    if (!m_bIsLocked) {
-      pws_os::sleep_ms(200);
-    }
-  } while (!m_bIsLocked && --tries > 0);
-  return m_bIsLocked;
-}
-
-void CXMLprefs::Unlock()
-{
-  PWSprefs::UnlockCFGFile(m_csConfigFile);
-  m_bIsLocked = false;
-}
-
 bool CXMLprefs::CreateXML(bool bLoad)
 {
   // Call with bLoad set when about to Load, else
@@ -71,18 +52,6 @@ bool CXMLprefs::XML_Load()
   if (m_pXMLDoc != nullptr)
     return true;
 
-  bool alreadyLocked = m_bIsLocked;
-  if (!alreadyLocked) {
-    stringT locker;
-    if (!Lock(locker)) {
-      LoadAString(m_Reason, IDSC_XMLLOCK_CFG_FAILED);
-      m_Reason += _T("\n"); m_Reason += locker;
-      // Show filename for troubleshooting
-      m_Reason += _T("\n"); m_Reason += m_csConfigFile;
-      return false;
-    }
-  }
-
   if (!CreateXML(true)) {
     LoadAString(m_Reason, IDSC_XMLCREATE_CFG_FAILED);
     return false;
@@ -102,9 +71,6 @@ bool CXMLprefs::XML_Load()
     return false;
   } // load failed
 
-  // If we locked it, we should unlock it...
-  if (!alreadyLocked)
-    Unlock();
   
   // If OK - delete any error message
   m_Reason.clear();
@@ -131,18 +97,8 @@ static void SortPreferences(pugi::xml_node parent)
 bool CXMLprefs::XML_Store(const stringT &csBaseKeyName)
 {
   bool retval = false;
-  bool alreadyLocked = m_bIsLocked;
   pugi::xml_node decl;
   pugi::xml_node nodePrefs;
-
-  if (!alreadyLocked) {
-    stringT locker;
-    if (!Lock(locker)) {
-      LoadAString(m_Reason, IDSC_XMLLOCK_CFG_FAILED);
-      m_Reason += _T("\n  "); m_Reason += locker;
-      return false;
-    }
-  }
 
   // Although technically possible, it doesn't make sense
   // to create a toplevel document here, since we'd then
@@ -171,9 +127,6 @@ bool CXMLprefs::XML_Store(const stringT &csBaseKeyName)
                          pugi::encoding_utf8);
 
 exit:
-  // If we locked it, we should unlock it...
-  if (!alreadyLocked)
-    Unlock();
   
   // If OK - delete any error message
   if (retval)

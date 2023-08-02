@@ -51,7 +51,6 @@ public:
                                         m_OPTMD.ShowPasswordInTree;}
   bool ShowUsernameInTree() const {return m_OPTMD.ShowUsernameInTree == TRUE;}
   bool HighlightChanges() const {return m_OPTMD.HighlightChanges == TRUE;}
-  bool SaveImmediately() const { return m_OPTMD.SaveImmediately == TRUE; }
   bool LockOnWindowLock() const {return m_OPTMD.LockOnWindowLock == TRUE;}
   bool LockOnWindowLockChanged() const {return m_OPTMD.LockOnWindowLock !=
                                                m_save_bLockOnWindowLock;}
@@ -80,7 +79,7 @@ private:
   int m_save_iPercentTransparency;
   bool m_bIsModified, m_bChanged;
   bool m_bRefreshViews, m_bSaveGroupDisplayState, m_bUpdateShortcuts, m_bCheckExpired;
-  BOOL m_save_bSaveImmediately, m_save_bHighlightChanges, m_save_bPreExpiryWarn;
+  BOOL m_save_bHighlightChanges, m_save_bPreExpiryWarn;
   BOOL m_save_bShowUsernameInTree, m_save_bShowPasswordInTree, m_save_bExplorerTypeTree;
   BOOL m_save_bLockOnWindowLock, m_bStartupShortcutExists;
   BOOL m_save_bEnableTransparency;

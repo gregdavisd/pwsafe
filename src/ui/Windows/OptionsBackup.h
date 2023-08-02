@@ -36,7 +36,6 @@ protected:
   CString m_UserBackupPrefix;
   CString m_UserBackupOtherLocation;
   CString m_csExpandedPath;
-  BOOL m_SaveImmediately;
   BOOL m_BackupBeforeSave;
   int m_BackupPrefix;
   int m_BackupLocation;
@@ -49,8 +48,7 @@ protected:
   CString m_currentFileDir;
   CString m_currentFileBasename;
 
-  CButtonExtn m_chkbox;
-  CTBMStatic m_Help1, m_Help2, m_Help3, m_Help4;
+  CTBMStatic m_Help1, m_Help2, m_Help3;
 
   // Overrides
   // ClassWizard generate virtual function overrides

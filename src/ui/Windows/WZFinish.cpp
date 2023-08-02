@@ -413,8 +413,7 @@ LRESULT CWZFinish::OnExecuteThreadEnded(WPARAM , LPARAM )
 
   // Tidy up other core
   if (m_pothercore != nullptr) {
-    m_pothercore->SafeUnlockCurFile();
-    m_pothercore->ClearDBData();
+     m_pothercore->ClearDBData();
     m_pothercore->SetCurFile(L"");
     delete m_pothercore;
     m_pothercore = nullptr;

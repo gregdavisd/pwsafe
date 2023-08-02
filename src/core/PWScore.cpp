@@ -49,7 +49,6 @@ stringT PWScore::StatusText(int s)
    {SUCCESS, _T("Success")},
    {FAILURE, _T("Failure")},
    {USER_DECLINED_SAVE, _T("User declined save")},
-   {CANT_GET_LOCK, _T("Couldn't acquire lock")},
    {DB_HAS_CHANGED, _T("Database has changed")},
    {CANT_OPEN_FILE, _T("Can't open file")},
    {USER_CANCEL, _T("User cancelled")},
@@ -169,8 +168,6 @@ PWScore::PWScore() :
                      m_currfile(_T("")),
                      m_passkey(nullptr), m_passkey_len(0),
                      m_hashIters(MIN_HASH_ITERATIONS),
-                     m_lockFileHandle(INVALID_HANDLE_VALUE),
-                     m_lockFileHandle2(INVALID_HANDLE_VALUE),
                      m_ReadFileVersion(PWSfile::UNKNOWN_VERSION),
                      m_bIsReadOnly(false),
                      m_bNotifyDB(false),
@@ -3315,41 +3312,6 @@ void PWScore::UpdateWizard(const stringT &s)
  *  End UI Interface feedback routines
  */
 
-bool PWScore::LockFile(const stringT &filename, stringT &locker)
-{
-  return pws_os::LockFile(filename, locker,
-                          m_lockFileHandle);
-}
-
-bool PWScore::IsLockedFile(const stringT &filename) const
-{
-  return pws_os::IsLockedFile(filename);
-}
-
-void PWScore::UnlockFile(const stringT &filename)
-{
-  return pws_os::UnlockFile(filename, m_lockFileHandle);
-}
-
-void PWScore::SafeUnlockCurFile()
-{
-  const std::wstring filename(GetCurFile().c_str());
-
-  // The only way we're the locker is if it's locked & we're !readonly
-  if (!filename.empty() && !IsReadOnly() && IsLockedFile(filename))
-    UnlockFile(filename);
-}
-
-bool PWScore::LockFile2(const stringT &filename, stringT &locker)
-{
-  return pws_os::LockFile(filename, locker,
-                          m_lockFileHandle2);
-}
-
-void PWScore::UnlockFile2(const stringT &filename)
-{
-  return pws_os::UnlockFile(filename, m_lockFileHandle2);
-}
 
 bool PWScore::IsNodeModified(StringX &path) const
 {
@@ -3794,7 +3756,7 @@ void PWScore::UpdateExpiryEntry(const CUUID &uuid, const CItemData::FieldType ft
   }
 }
 
-bool PWScore::ChangeMode(stringT &locker, int &iErrorCode)
+bool PWScore::ChangeMode( int &iErrorCode)
 {
   PWS_LOGIT;
 
@@ -3806,8 +3768,7 @@ bool PWScore::ChangeMode(stringT &locker, int &iErrorCode)
    If currently R/W, we need to unlock the database.
   */
   iErrorCode = SUCCESS;
-  locker = _T(""); // Important!
-
+ 
   if (m_bIsReadOnly) {
     // We know the file did exist but this will also determine if it is R-O
     bool isRO;
@@ -3818,14 +3779,7 @@ bool PWScore::ChangeMode(stringT &locker, int &iErrorCode)
       PWS_LOGIT_ARGS0("Failed: READ_FAIL");
       return false;
     }
-
-    // OK, we have write access, let's lock it
-    bool brc = pws_os::LockFile(m_currfile.c_str(), locker, m_lockFileHandle);
-    if (!brc) {
-      iErrorCode = CANT_GET_LOCK;
-      PWS_LOGIT_ARGS0("Failed: CANT_GET_LOCK");
-      return false;
-    }
+ 
 
     // It was R-O, better check no-one has changed anything from in-memory copy
     // The one calculated when we read it in is 'm_pFileSig' (R-O - so we haven't changed it)
@@ -3841,13 +3795,12 @@ bool PWScore::ChangeMode(stringT &locker, int &iErrorCode)
       iErrorCode = newFileSig.GetErrorCode();
     }
     if (iErrorCode != 0) {
-      pws_os::UnlockFile(m_currfile.c_str(), m_lockFileHandle);
+ 
       PWS_LOGIT_ARGS("Failed code: %d", iErrorCode);
       return false;
     }
   } else { // In R/W mode - switch to R-O
-    // Unlock file
-    pws_os::UnlockFile(m_currfile.c_str(), m_lockFileHandle);
+ 
   }
 
   // Swap Read/Write : Read/Only status

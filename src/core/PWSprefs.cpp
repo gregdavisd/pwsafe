@@ -74,7 +74,6 @@ const PWSprefs::boolPref PWSprefs::m_bool_prefs[NumBoolPrefs] = {
   {_T("ShowPasswordInTree"), false, ptDatabase},            // database
   {_T("SortAscending"), true, ptObsolete},                  // obsolete in 3.40 - replaced by new app pref
   {_T("UseDefaultUser"), false, ptDatabase},                // database
-  {_T("SaveImmediately"), true, ptDatabase},                // database
   {_T("PWUseLowercase"), true, ptDatabase},                 // database
   {_T("PWUseUppercase"), true, ptDatabase},                 // database
   {_T("PWUseDigits"), true, ptDatabase},                    // database
@@ -100,7 +99,7 @@ const PWSprefs::boolPref PWSprefs::m_bool_prefs[NumBoolPrefs] = {
   {_T("IsUTF8"), false, ptDatabase},                        // database - not used???
   {_T("HotKeyEnabled"), false, ptApplication},              // application
   {_T("MRUOnFileMenu"), true, ptApplication},               // application
-  {_T("DisplayExpandedAddEditDlg"), true, ptObsolete},      // obsolete in 3.18
+  {_T("DisplayExpandedAddFEditDlg"), true, ptObsolete},      // obsolete in 3.18
   {_T("MaintainDateTimeStamps"), false, ptDatabase},        // database
   {_T("SavePasswordHistory"), false, ptDatabase},           // database
   {_T("FindWraps"), false, ptObsolete},                     // obsolete in 3.11
@@ -1178,14 +1177,9 @@ void PWSprefs::InitializePreferences()
     ImportOldPrefs();
     LoadProfileFromRegistry();
     // can we create one? If not, fallback to registry
-    // We assume that if we can create a lock file, we can create
-    // a config file in the same directory
-    stringT locker;
-    if (LockCFGFile(m_configfilename, locker)) {
-      UnlockCFGFile(m_configfilename);
-    } else {
+
       m_ConfigOption = CF_REGISTRY; // CF_FILE_RW_NEW -> CF_REGISTRY
-    }
+    
   }
 
   stringT cs_msg;
@@ -1512,21 +1506,12 @@ void PWSprefs::SaveApplicationPreferences()
 
   if (m_ConfigOption == CF_FILE_RW ||
       m_ConfigOption == CF_FILE_RW_NEW) {
-    // Load prefs file in case it was changed elsewhere
-    // Here we need to explicitly lock from before
-    // load to after store
+    // Load prefs file 
     m_pXML_Config = new CXMLprefs(m_configfilename);
-    stringT locker;
-    if (!m_pXML_Config->Lock(locker)) {
-      // punt to registry!
-      m_ConfigOption = CF_REGISTRY;
-      delete m_pXML_Config;
-      m_pXML_Config = nullptr;
-    } else { // acquired lock
       // if file exists, load to get other values
       if (pws_os::FileExists(m_configfilename))
         m_pXML_Config->XML_Load(); // we ignore failures here. why bother?
-    }
+    
   }
   UpdateTimeStamp();
 
@@ -1657,7 +1642,6 @@ void PWSprefs::SaveApplicationPreferences()
       m_ConfigOption = CF_FILE_RW;
     else if (!m_pXML_Config->getReason().empty() && m_pReporter != nullptr)
       (*m_pReporter)(m_pXML_Config->getReason()); // show what went wrong
-    m_pXML_Config->Unlock();
     delete m_pXML_Config;
     m_pXML_Config = nullptr;
   }
@@ -1676,17 +1660,9 @@ void PWSprefs::SaveShortcuts()
     // Here we need to explicitly lock from before
     // load to after store
     m_pXML_Config = new CXMLprefs(m_configfilename);
-    stringT locker;
-    if (!m_pXML_Config->Lock(locker)) {
-      // punt to registry!
-      m_ConfigOption = CF_REGISTRY;
-      delete m_pXML_Config;
-      m_pXML_Config = nullptr;
-    } else { // acquired lock
       // if file exists, load to get other values
       if (pws_os::FileExists(m_configfilename))
         m_pXML_Config->XML_Load(); // we ignore failures here. why bother?
-    }
   }
 
   if (m_ConfigOption == CF_FILE_RW ||
@@ -1710,7 +1686,6 @@ void PWSprefs::SaveShortcuts()
         m_pReporter != nullptr)
       (*m_pReporter)(m_pXML_Config->getReason()); // show what went wrong
 
-    m_pXML_Config->Unlock();
     delete m_pXML_Config;
     m_pXML_Config = nullptr;
   }
@@ -1865,22 +1840,6 @@ stringT PWSprefs::GetXMLPreferences()
   os << "\t</Preferences>" << endl << endl;
   retval = os.str().c_str();
   return retval;
-}
-
-bool PWSprefs::LockCFGFile(const stringT &filename, stringT &locker)
-{
-  return pws_os::LockFile(filename, locker,
-                          s_cfglockFileHandle);
-}
-
-void PWSprefs::UnlockCFGFile(const stringT &filename)
-{
-  return pws_os::UnlockFile(filename, s_cfglockFileHandle);
-}
-
-bool PWSprefs::IsLockedCFGFile(const stringT &filename)
-{
-  return pws_os::IsLockedFile(filename);
 }
 
 void PWSprefs::ClearUnknownPrefs()

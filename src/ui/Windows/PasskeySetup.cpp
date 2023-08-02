@@ -26,7 +26,6 @@
 #include "os/dir.h"
 #include "os/rand.h"
 
-#include "VirtualKeyboard/VKeyBoardDlg.h"
 
 #include "resource.h"
 #include "resource3.h"  // String resources
@@ -69,7 +68,6 @@ void CPasskeySetup::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CPasskeySetup, CPKBaseDlg)
   ON_WM_TIMER()
 
-  ON_STN_CLICKED(IDC_VKB, OnVirtualKeyboard)
   ON_BN_CLICKED(ID_HELP, OnHelp)
   ON_BN_CLICKED(IDC_YUBIKEY_BTN, OnYubikeyBtn)
   ON_BN_CLICKED(IDC_SHOWMASTERPASSWORD, OnShowMasterPassword)
@@ -77,7 +75,6 @@ BEGIN_MESSAGE_MAP(CPasskeySetup, CPKBaseDlg)
   ON_EN_SETFOCUS(IDC_PASSKEY, OnPasskeySetfocus)
   ON_EN_SETFOCUS(IDC_VERIFY, OnVerifykeySetfocus)
 
-  ON_MESSAGE(PWS_MSG_INSERTBUFFER, OnInsertBuffer)
 END_MESSAGE_MAP()
 
 BOOL CPasskeySetup::OnInitDialog() 
@@ -89,11 +86,6 @@ BOOL CPasskeySetup::OnInitDialog()
 
   m_pctlVerify->SetPasswordChar(PSSWDCHAR);
 
-  // Only show virtual Keyboard menu if we can load DLL
-  if (!CVKeyBoardDlg::IsOSKAvailable()) {
-    GetDlgItem(IDC_VKB)->ShowWindow(SW_HIDE);
-    GetDlgItem(IDC_VKB)->EnableWindow(FALSE);
-  }
 
   return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -163,82 +155,6 @@ void CPasskeySetup::OnVerifykeySetfocus()
   m_LastFocus = IDC_VERIFY;
 }
 
-void CPasskeySetup::OnVirtualKeyboard()
-{
-  // Shouldn't be here if couldn't load DLL. Static control disabled/hidden
-  if (!CVKeyBoardDlg::IsOSKAvailable())
-    return;
-
-  if (m_pVKeyBoardDlg != NULL && m_pVKeyBoardDlg->IsWindowVisible()) {
-    // Already there - move to top
-    m_pVKeyBoardDlg->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    return;
-  }
-
-  // If not already created - do it, otherwise just reset it
-  if (m_pVKeyBoardDlg == NULL) {
-    StringX cs_LUKBD = PWSprefs::GetInstance()->GetPref(PWSprefs::LastUsedKeyboard);
-    m_pVKeyBoardDlg = new CVKeyBoardDlg(this, cs_LUKBD.c_str());
-    m_pVKeyBoardDlg->Create(CVKeyBoardDlg::IDD);
-  } else {
-    m_pVKeyBoardDlg->ResetKeyboard();
-  }
-
-  // Now show it and make it top
-  m_pVKeyBoardDlg->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-
-  return;
-}
-
-LRESULT CPasskeySetup::OnInsertBuffer(WPARAM, LPARAM)
-{
-  // Update the variables
-  UpdateData(TRUE);
-
-  // Get the buffer
-  CSecString vkbuffer = m_pVKeyBoardDlg->GetPassphrase();
-
-  CSecEditExtn *m_pSecCtl(NULL);
-  CSecString *m_pSecString;
-
-  switch (m_LastFocus) {
-    case IDC_PASSKEY:
-      m_pSecCtl = m_pctlPasskey;
-      m_pSecString = &m_passkey;
-      break;
-    case IDC_VERIFY:
-      m_pSecCtl = m_pctlVerify;
-      m_pSecString = &m_verify;
-      break;
-    default:
-      // Error!
-      ASSERT(0);
-      return 0L;
-  }
-
-  // Find the selected characters - if any
-  int nStartChar, nEndChar;
-  m_pSecCtl->GetSel(nStartChar, nEndChar);
-
-  // If any characters selected - delete them
-  if (nStartChar != nEndChar)
-    m_pSecString->Delete(nStartChar, nEndChar - nStartChar);
-
-  // Insert the buffer
-  m_pSecString->Insert(nStartChar, vkbuffer);
-
-  // Update the dialog
-  UpdateData(FALSE);
-
-  // Put cursor at end of inserted text
-  m_pSecCtl->SetSel(nStartChar + vkbuffer.GetLength(),
-                    nStartChar + vkbuffer.GetLength());
-
-  // Make us on top
-  SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-
-  return 0L;
-}
 
 void CPasskeySetup::OnShowMasterPassword()
 {

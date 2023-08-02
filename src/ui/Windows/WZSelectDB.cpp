@@ -19,7 +19,6 @@
 #include "GeneralMsgBox.h"
 #include "PWFileDialog.h"
 #include "PKBaseDlg.h"
-#include "VirtualKeyboard/VKeyBoardDlg.h"
 #include "winutils.h"
 
 #include "core/core.h" // for IDSC_UNKNOWN_ERROR
@@ -71,18 +70,6 @@ CWZSelectDB::~CWZSelectDB()
   delete m_pctlPasskey2;
   delete m_pctlVerify2;
 
-  if (m_pVKeyBoardDlg != NULL && m_pVKeyBoardDlg->SaveKLID()) {
-    // Save Last Used Keyboard
-    UINT uiKLID = m_pVKeyBoardDlg->GetKLID();
-    std::wostringstream os;
-    os.fill(L'0');
-    os << std::nouppercase << std::hex << std::setw(8) << uiKLID;
-    StringX cs_KLID = os.str().c_str();
-    PWSprefs::GetInstance()->SetPref(PWSprefs::LastUsedKeyboard, cs_KLID);
-
-    m_pVKeyBoardDlg->DestroyWindow();
-    delete m_pVKeyBoardDlg;
-  }
 }
 
 void CWZSelectDB::DoDataExchange(CDataExchange* pDX)
@@ -168,9 +155,6 @@ BEGIN_MESSAGE_MAP(CWZSelectDB, CWZPropertyPage)
   ON_EN_SETFOCUS(IDC_VERIFY2, OnVerify2keySetfocus)
 
   ON_BN_CLICKED(IDC_BTN_BROWSE, OnOpenFileBrowser)
-  ON_STN_CLICKED(IDC_VKB, OnVirtualKeyboard)
-  ON_STN_CLICKED(IDC_VKB2, OnVirtualKeyboard)
-  ON_MESSAGE(PWS_MSG_INSERTBUFFER, OnInsertBuffer)
 
   ON_BN_CLICKED(ID_HELP, OnHelp)
   ON_BN_CLICKED(IDC_ADVANCED, OnAdvanced)
@@ -354,13 +338,6 @@ BOOL CWZSelectDB::OnInitDialog()
   cs_text.LoadString(uifilemsg);
   GetDlgItem(IDC_STATIC_WZFILE)->SetWindowText(cs_text);
 
-  // Only show virtual Keyboard menu if we can load DLL
-  if (!CVKeyBoardDlg::IsOSKAvailable()) {
-    GetDlgItem(IDC_VKB)->ShowWindow(SW_HIDE);
-    GetDlgItem(IDC_VKB)->EnableWindow(FALSE);
-    GetDlgItem(IDC_VKB2)->ShowWindow(SW_HIDE);
-    GetDlgItem(IDC_VKB2)->EnableWindow(FALSE);
-  }
 
   // Disable Next until fields set
   m_pWZPSH->SetWizardButtons(0);
@@ -821,105 +798,7 @@ void CWZSelectDB::OnOpenFileBrowser()
   } // rc == IDOK
 }
 
-void CWZSelectDB::OnVirtualKeyboard()
-{
-  // Shouldn't be here if couldn't load DLL. Static control disabled/hidden
-  if (!CVKeyBoardDlg::IsOSKAvailable())
-    return;
 
-  if (m_pVKeyBoardDlg != NULL && m_pVKeyBoardDlg->IsWindowVisible()) {
-    // Already there - move to top
-    m_pVKeyBoardDlg->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    return;
-  }
-
-  // If not already created - do it, otherwise just reset it
-  if (m_pVKeyBoardDlg == NULL) {
-    StringX cs_LUKBD = PWSprefs::GetInstance()->GetPref(PWSprefs::LastUsedKeyboard);
-    m_pVKeyBoardDlg = new CVKeyBoardDlg(this, cs_LUKBD.c_str());
-    m_pVKeyBoardDlg->Create(CVKeyBoardDlg::IDD);
-  } else {
-    m_pVKeyBoardDlg->ResetKeyboard();
-  }
-
-  // Now show it and make it top
-  m_pVKeyBoardDlg->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-
-  return;
-}
-
-LRESULT CWZSelectDB::OnInsertBuffer(WPARAM, LPARAM)
-{
-  // Update the variables
-  UpdateData(TRUE);
-
-  // Get the buffer
-  CSecString vkbuffer = m_pVKeyBoardDlg->GetPassphrase();
-
-  CSecEditExtn *m_pSecCtl(NULL);
-  CSecString *m_pSecString;
-
-  switch (m_LastFocus) {
-    case IDC_PASSKEY:
-      m_pSecCtl = m_pctlPasskey;
-      m_pSecString = &m_passkey;
-      break;
-    case IDC_PASSKEY2:
-      m_pSecCtl = m_pctlPasskey2;
-      m_pSecString = &m_passkey2;
-      break;
-    case IDC_VERIFY2:
-      m_pSecCtl = m_pctlVerify2;
-      m_pSecString = &m_verify2;
-      break;
-    default:
-      // Error!
-      ASSERT(0);
-      return 0L;
-  }
-
-  // Find the selected characters - if any
-  int nStartChar, nEndChar;
-  m_pSecCtl->GetSel(nStartChar, nEndChar);
-
-  // If any characters selected - delete them
-  if (nStartChar != nEndChar)
-    m_pSecString->Delete(nStartChar, nEndChar - nStartChar);
-
-  // Insert the buffer
-  m_pSecString->Insert(nStartChar, vkbuffer);
-
-  // Put cursor at end of inserted text
-  m_pSecCtl->SetSel(nStartChar + vkbuffer.GetLength(),
-                    nStartChar + vkbuffer.GetLength());
-
-  // Update the dialog
-  UpdateData(FALSE);
-
-  // Ensure flags set so that buttons are activated as required
-  if (!vkbuffer.IsEmpty()) {
-    switch (m_LastFocus) {
-      case IDC_PASSKEY:
-        OnPassKeyChange();
-        break;
-      case IDC_PASSKEY2:
-        OnPassKey2Change();
-        break;
-      case IDC_VERIFY2:
-        OnVerify2Change();
-        break;
-      default:
-        // Error!
-        ASSERT(0);
-        return 0L;
-    }
-  }
-
-  // Make us on top
-  SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-
-  return 0L;
-}
 
 void CWZSelectDB::yubiInserted(void)
 {

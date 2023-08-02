@@ -54,12 +54,6 @@ CFontsDialog::CFontsDialog(LPLOGFONT lplfInitial, DWORD dwFlags, CDC* pdcPrinter
     case NOTESFONT:
       uiID = IDS_NOTESFONT;
       break;
-    case VKEYBOARDFONT:
-      uiID = IDS_VKBDFONT;
-      // Set up default font, which is NONE
-      memcpy(&m_dfltVKBDFont, lplfInitial, sizeof(LOGFONT));
-      SecureZeroMemory(m_dfltVKBDFont.lfFaceName, sizeof(m_dfltVKBDFont.lfFaceName));
-      break;
     // NO "default" statement to generate compiler error if enum missing
   }
 
@@ -88,23 +82,6 @@ static UINT_PTR CALLBACK CFHookProc(HWND hdlg, UINT uiMsg,
 
     ::SetWindowText(hdlg, pwfd_self->m_title);
 
-    if (pwfd_self->m_iType == CFontsDialog::VKEYBOARDFONT) {
-      // Disable things we don't allow changed - defined in MFC's dlgs.h
-      /*
-        cmb2 = 0x0471 = Font style combobox
-        stc2 = 0x0441 = Font style text ("Font st&yle:")
-      */
-      EnableWindow(GetDlgItem(hdlg, cmb2), FALSE); // style
-      EnableWindow(GetDlgItem(hdlg, stc2), FALSE); // style
-      /*
-        cmb5 = 0x0474 = Script combobox
-        stc7 = 0x0446 = Script text ("Sc&ript:")
-      */
-      EnableWindow(GetDlgItem(hdlg, cmb5), FALSE); // script
-      ShowWindow(GetDlgItem(hdlg, cmb5), SW_HIDE); // script
-      ShowWindow(GetDlgItem(hdlg, stc7), SW_HIDE); // script
-    }
-
     return TRUE;
   }
   if (uiMsg == WM_COMMAND && HIWORD(wParam) == BN_CLICKED) {
@@ -121,11 +98,6 @@ static UINT_PTR CALLBACK CFHookProc(HWND hdlg, UINT uiMsg,
       return TRUE;  // We processed message
     }
     if (LOWORD(wParam) == IDC_RESETFONT) {
-      if (pwfd_self->m_iType == CFontsDialog::VKEYBOARDFONT) {
-        pwfd_self->m_bReset = true;
-        pwfd_self->PostMessage(WM_COMMAND, MAKEWPARAM(IDOK, BN_CLICKED), 0);
-        return TRUE;  // We processed message
-      }
 
       LOGFONT dfltFont = {0};
       wchar_t wc_pt[4] = {0, 0, 0, 0};
@@ -145,9 +117,7 @@ static UINT_PTR CALLBACK CFHookProc(HWND hdlg, UINT uiMsg,
         case CFontsDialog::NOTESFONT:
           Fonts::GetInstance()->GetDefaultNotesFont(dfltFont);
           break;
-        case CFontsDialog::VKEYBOARDFONT:
-          // Shouldn't get here as processed earlier
-          return FALSE;
+
         // NO "default" statement to generate compiler error if enum missing
       }
 

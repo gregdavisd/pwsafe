@@ -34,7 +34,6 @@ down the streetsky.  [Groucho Marx]
 #include "os/dir.h"
 #include "os/env.h"
 
-#include "VirtualKeyboard/VKeyBoardDlg.h"
 
 #include "resource.h"
 #include "resource3.h"  // String resources
@@ -128,12 +127,10 @@ BEGIN_MESSAGE_MAP(CPasskeyEntry, CPKBaseDlg)
   ON_BN_CLICKED(IDC_READONLY, OnBnClickedReadonly)
   ON_BN_CLICKED(IDC_SHOWMASTERPASSWORD, OnShowMasterPassword)
   ON_BN_CLICKED(IDC_BTN_BROWSE, OnOpenFileBrowser)
-  ON_STN_CLICKED(IDC_VKB, OnVirtualKeyboard)
 
   ON_CBN_EDITCHANGE(IDC_DATABASECOMBO, OnComboEditChange)
   ON_CBN_SELCHANGE(IDC_DATABASECOMBO, OnComboSelChange)
 
-  ON_MESSAGE(PWS_MSG_INSERTBUFFER, OnInsertBuffer)
   //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -177,11 +174,6 @@ BOOL CPasskeyEntry::OnInitDialog(void)
   if (create_bn) // not always there
     create_bn->EnableWindow((m_bForceReadOnly || m_btnReadOnly) ? FALSE : TRUE);
 
-  // Only show virtual Keyboard menu if we can load DLL
-  if (!CVKeyBoardDlg::IsOSKAvailable()) {
-    GetDlgItem(IDC_VKB)->ShowWindow(SW_HIDE);
-    GetDlgItem(IDC_VKB)->EnableWindow(FALSE);
-  }
 
   if (m_index == GCP_FIRST) {
     GetDlgItem(IDC_VERSION)->SetWindowText(m_appversion);
@@ -595,63 +587,6 @@ void CPasskeyEntry::SetHeight(const int num)
   }
 
   m_MRU_combo.SetWindowPos(NULL, 0, 0, sz.cx, sz.cy, SWP_NOMOVE | SWP_NOZORDER);
-}
-
-void CPasskeyEntry::OnVirtualKeyboard()
-{
-  // Shouldn't be here if couldn't load DLL. Static control disabled/hidden
-  if (!CVKeyBoardDlg::IsOSKAvailable())
-    return;
-
-  if (m_pVKeyBoardDlg != NULL && m_pVKeyBoardDlg->IsWindowVisible()) {
-    // Already there - move to top
-    m_pVKeyBoardDlg->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    return;
-  }
-
-  // If not already created - do it, otherwise just reset it
-  if (m_pVKeyBoardDlg == NULL) {
-    StringX cs_LUKBD = PWSprefs::GetInstance()->GetPref(PWSprefs::LastUsedKeyboard);
-    m_pVKeyBoardDlg = new CVKeyBoardDlg(this, cs_LUKBD.c_str());
-    m_pVKeyBoardDlg->Create(CVKeyBoardDlg::IDD);
-  } else {
-    m_pVKeyBoardDlg->ResetKeyboard();
-  }
-
-  // Now show it and make it top
-  m_pVKeyBoardDlg->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-}
-
-LRESULT CPasskeyEntry::OnInsertBuffer(WPARAM, LPARAM)
-{
-  // Update the variables
-  UpdateData(TRUE);
-
-  // Get the buffer
-  CSecString vkbuffer = m_pVKeyBoardDlg->GetPassphrase();
-
-  // Find the selected characters - if any
-  int nStartChar, nEndChar;
-  m_pctlPasskey->GetSel(nStartChar, nEndChar);
-
-  // If any characters selected - delete them
-  if (nStartChar != nEndChar)
-    m_passkey.Delete(nStartChar, nEndChar - nStartChar);
-
-  // Insert the buffer
-  m_passkey.Insert(nStartChar, vkbuffer);
-
-  // Update the dialog
-  UpdateData(FALSE);
-
-  // Put cursor at end of inserted text
-  m_pctlPasskey->SetSel(nStartChar + vkbuffer.GetLength(), 
-                        nStartChar + vkbuffer.GetLength());
-
-  // Make us on top
-  SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-
-  return 0L;
 }
 
 void CPasskeyEntry::OnYubikeyBtn()

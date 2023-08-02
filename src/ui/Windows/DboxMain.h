@@ -736,7 +736,6 @@ public:
   afx_msg void OnChangeTreeFont();
   afx_msg void OnChangePswdFont();
   afx_msg void OnChangeNotesFont();
-  afx_msg void OnChangeVKFont();
   afx_msg void OnChangeAddEditFont();
   afx_msg void OnViewReportsByID(UINT nID);  // From View->Reports menu
   afx_msg void OnViewReports();

@@ -49,8 +49,6 @@ protected:
   afx_msg void OnNewPasskeySetfocus();
   afx_msg void OnConfirmNewSetfocus();
   afx_msg void OnShowMasterPassword();
-  afx_msg void OnVirtualKeyboard();
-  afx_msg LRESULT OnInsertBuffer(WPARAM, LPARAM);
   afx_msg void OnYubikey2Btn();
   afx_msg void OnYubikeyBtn();
   //}}AFX_MSG

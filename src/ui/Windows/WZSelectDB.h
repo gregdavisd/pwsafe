@@ -50,7 +50,6 @@ protected:
   afx_msg void OnVerify2Change();
   afx_msg void OnDatabaseChange();
   afx_msg void OnOpenFileBrowser();
-  afx_msg void OnVirtualKeyboard();
   afx_msg void OnAdvanced();
   afx_msg void OnExportFilters();
   afx_msg void OnPasskeySetfocus();
@@ -59,7 +58,6 @@ protected:
   afx_msg void OnYubikeyBtn();
   afx_msg void OnShowMasterPassword();
   afx_msg void OnTimer(UINT_PTR nIDEvent);
-  afx_msg LRESULT OnInsertBuffer(WPARAM, LPARAM);
   //}}AFX_MSG
 
   DECLARE_MESSAGE_MAP()

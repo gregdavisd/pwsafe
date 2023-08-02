@@ -24,8 +24,6 @@
 #include "MenuShortcuts.h"
 #include "HKModifiers.h"
 
-#include "VirtualKeyboard/VKeyBoardDlg.h"
-
 #include "core/pwsprefs.h"
 #include "core/core.h"
 #include "core/PWHistory.h"
@@ -2784,10 +2782,6 @@ void DboxMain::OnChangePswdFont()
   ChangeFont(CFontsDialog::PASSWORDFONT);
 }
 
-void DboxMain::OnChangeVKFont()
-{
-  ChangeFont(CFontsDialog::VKEYBOARDFONT);
-}
 
 void DboxMain::ChangeFont(const CFontsDialog::FontType iType)
 {
@@ -2832,37 +2826,6 @@ void DboxMain::ChangeFont(const CFontsDialog::FontType iType)
       pFonts->GetNotesFont(&lf);
       pFonts->GetDefaultNotesFont(dflt_lf);
       break;
-    case CFontsDialog::VKEYBOARDFONT:
-      // Note Virtual Keyboard font is not kept in Fonts class - so set manually
-      pref_Font = PWSprefs::VKeyboardFontName;
-      pref_FontSampleText = PWSprefs::VKSampleText;
-      dwFlags |= CF_LIMITSIZE | CF_NOSCRIPTSEL;
-      dflt_lf = {-16, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, L""};
-      lf = dflt_lf;
-
-      // Get resolution
-      HDC hDC = ::GetWindowDC(GetSafeHwnd());
-      const int Ypixels = GetDeviceCaps(hDC, LOGPIXELSY);
-      ::ReleaseDC(GetSafeHwnd(), hDC);
-
-      // See if user has set a point size
-      iFontSize = PWSprefs::GetInstance()->GetPref(PWSprefs::VKFontPtSz);
-      if (iFontSize == 0) {
-        // Use default
-        iFontSize = MulDiv(16, 72, Ypixels) * 10;
-        PWSprefs::GetInstance()->SetPref(PWSprefs::VKFontPtSz, iFontSize);
-      }
-
-      // Update font point size
-      lf.lfHeight = -MulDiv(iFontSize / 10, Ypixels, 72);
-
-      // Get VKeyboard font in case the user wants to change this.
-      cs_FontName = prefs->GetPref(PWSprefs::VKeyboardFontName);
-      if (cs_FontName.length() != 0 && cs_FontName.length() <= LF_FACESIZE) {
-        memcpy_s(lf.lfFaceName, LF_FACESIZE * sizeof(wchar_t),
-          cs_FontName.c_str(), cs_FontName.length() * sizeof(wchar_t));
-      }
-      break;
     // NO "default" statement to generate compiler error if enum missing
   }
 
@@ -2870,23 +2833,13 @@ void DboxMain::ChangeFont(const CFontsDialog::FontType iType)
 
   CFontsDialog fontdlg(&lf, dwFlags, NULL, NULL, iType);
 
-  if (iType == CFontsDialog::VKEYBOARDFONT) {
-    fontdlg.m_cf.nSizeMin = 8;
-    fontdlg.m_cf.nSizeMax = 16;
-  }
+
 
   fontdlg.m_sampletext = cs_SampleText.c_str();
 
   INT_PTR rc = fontdlg.DoModal();
   if (rc== IDOK) {
     iFontSize = fontdlg.GetSize();
-    if (iType == CFontsDialog::VKEYBOARDFONT && fontdlg.m_bReset) {
-      // User requested the Virtual Keyboard to be reset now
-      // Other fonts are just reset within the Fontdialog without exiting
-      prefs->ResetPref(pref_Font);
-      prefs->ResetPref(pref_FontSampleText);
-      return;
-    }
 
     CString csfn(lf.lfFaceName), csdfltfn(dflt_lf.lfFaceName);
     switch (iType) {
@@ -2927,27 +2880,6 @@ void DboxMain::ChangeFont(const CFontsDialog::FontType iType)
         // Recalculating row height
         m_ctlItemList.UpdateRowHeight(true);
         break;
-      case CFontsDialog::VKEYBOARDFONT:
-        // Note Virtual Keyboard font is not kept in Fonts class - so set manually
-        prefs->SetPref(PWSprefs::VKFontPtSz, iFontSize);
-
-        if (csfn.IsEmpty()) {
-          // Delete config VKeyboard font face name
-          prefs->ResetPref(pref_Font);
-        } else {
-          // Save user's choice of VKeyboard font face name
-          // Remove leading @ (OpenType) if present
-          if (csfn.Left(1) == L"@")
-            csfn = csfn.Mid(1);
-
-          if (csfn == CString(CVKeyBoardDlg::ARIALUMS))
-            prefs->ResetPref(pref_Font);
-          else
-            prefs->SetPref(pref_Font, LPCWSTR(csfn));
-
-          prefs->SetPref(pref_FontSampleText, LPCWSTR(fontdlg.m_sampletext));
-        }
-        return;
       // NO "default" statement to generate compiler error if enum missing
     }
 

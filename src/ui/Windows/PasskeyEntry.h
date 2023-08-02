@@ -100,9 +100,7 @@ protected:
   afx_msg void OnBnClickedReadonly();
   afx_msg void OnShowMasterPassword();
   afx_msg void OnOpenFileBrowser();
-  afx_msg void OnVirtualKeyboard();
   afx_msg void OnYubikeyBtn();
-  afx_msg LRESULT OnInsertBuffer(WPARAM, LPARAM);
   //}}AFX_MSG
 
   DECLARE_MESSAGE_MAP()

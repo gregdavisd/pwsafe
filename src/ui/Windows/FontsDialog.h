@@ -15,7 +15,7 @@ class CFontsDialog : public CFontDialog
   DECLARE_DYNAMIC(CFontsDialog)
 
 public:
-  enum FontType { PASSWORDFONT, TREELISTFONT, ADDEDITFONT, NOTESFONT, VKEYBOARDFONT };
+  enum FontType { PASSWORDFONT, TREELISTFONT, ADDEDITFONT, NOTESFONT };
 
   CFontsDialog(LPLOGFONT lplfInitial = NULL,
                  DWORD dwFlags = CF_EFFECTS | CF_SCREENFONTS,

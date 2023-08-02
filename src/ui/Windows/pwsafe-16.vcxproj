@@ -639,8 +639,6 @@
     <ClCompile Include="ThisMfcApp.cpp" />
     <ClCompile Include="ViewAttachmentDlg.cpp" />
     <ClCompile Include="ViewReport.cpp" />
-    <ClCompile Include="VirtualKeyboard\VKBButton.cpp" />
-    <ClCompile Include="VirtualKeyboard\VKeyBoardDlg.cpp" />
     <ClCompile Include="winutils.cpp" />
     <ClCompile Include="WZAdvanced.cpp" />
     <ClCompile Include="WZFinish.cpp" />
@@ -781,8 +779,6 @@
     <ClInclude Include="VirtualKeyboard\VKresource.h" />
     <ClInclude Include="VirtualKeyboard\VKresource3.h" />
     <ClInclude Include="VirtualKeyboard\VKShiftState.h" />
-    <ClInclude Include="VirtualKeyboard\VKBButton.h" />
-    <ClInclude Include="VirtualKeyboard\VKeyBoardDlg.h" />
     <ClInclude Include="Windowsdefs.h" />
     <ClInclude Include="WZAdvanced.h" />
     <ClInclude Include="WZExecuteThreadParms.h" />
@@ -1120,9 +1116,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\os\windows\pws_autotype\pws_autotype-16.vcxproj">
       <Project>{fc3f78c0-1b04-40cf-a7b5-6f037436d9c0}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\os\windows\pws_osk\pws_osk-16.vcxproj">
-      <Project>{5f619d4f-185a-4b4b-8e77-02698eaeb962}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\os\windows\yubi\YkLib22-16.vcxproj">
       <Project>{326058ee-494b-4e51-bb34-1f4505e368b7}</Project>

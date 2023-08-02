@@ -42,10 +42,8 @@ protected:
 
   CSecString m_passkey;
   CSecEditExtn *m_pctlPasskey;
-  CVKeyBoardDlg *m_pVKeyBoardDlg;
   static const wchar_t PSSWDCHAR;
   int m_index;
-  bool m_bVKAvailable;
 
   virtual BOOL OnInitDialog();
   virtual BOOL PreTranslateMessage(MSG *pMsg);

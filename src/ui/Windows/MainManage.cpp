@@ -371,9 +371,6 @@ void DboxMain::OnOptions()
       }
     }
 
-    m_ctlItemList.SetHighlightChanges(pOptionsPS->HighlightChanges());
-    m_ctlItemTree.SetHighlightChanges(pOptionsPS->HighlightChanges());
-
     if (pOptionsPS->RefreshViews()) {
       RefreshViews();
     }

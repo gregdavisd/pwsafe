@@ -170,7 +170,6 @@ void DboxMain::UpdateGUI(UpdateGUICommand::GUI_Action ga,
       break;
     case UpdateGUICommand::GUI_PWH_CHANGED_IN_DB:
       // During this process, many entries may have been edited (marked modified)
-      if (PWSprefs::GetInstance()->GetPref(PWSprefs::HighlightChanges))
         RebuildGUI(BOTHVIEWS);
       break;
     case UpdateGUICommand::GUI_REFRESH_TREE:

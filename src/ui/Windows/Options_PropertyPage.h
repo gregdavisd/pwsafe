@@ -44,7 +44,6 @@ struct st_Opt_master_data {
   BOOL NotesShowInEdit;
   BOOL WordWrapNotes;
   BOOL PreExpiryWarn;
-  BOOL HighlightChanges;
   BOOL EnableTransparency;
   int PreExpiryWarnDays;
   int TreeDisplayStatusAtOpen;
@@ -161,7 +160,6 @@ public:
   inline BOOL &M_NotesShowInEdit() {return m_OPTMD.NotesShowInEdit;}
   inline BOOL &M_WordWrapNotes() {return m_OPTMD.WordWrapNotes;}
   inline BOOL &M_PreExpiryWarn() {return m_OPTMD.PreExpiryWarn;}
-  inline BOOL &M_HighlightChanges() {return m_OPTMD.HighlightChanges;}
   inline BOOL &M_EnableTransparency() {return m_OPTMD.EnableTransparency;}
   inline int &M_PreExpiryWarnDays() {return m_OPTMD.PreExpiryWarnDays;}
   inline int &M_TreeDisplayStatusAtOpen() {return m_OPTMD.TreeDisplayStatusAtOpen;}

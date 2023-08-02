@@ -33,8 +33,6 @@ public:
 
   void SetFilterState(bool bState);
   void SetUpFont();
-  void SetHighlightChanges(bool bvalue)
-  {m_bUseHighLighting = bvalue;}
   void UpdateRowHeight(bool bInvalidate);
 
 protected:

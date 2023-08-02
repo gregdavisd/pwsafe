@@ -123,7 +123,6 @@ const PWSprefs::boolPref PWSprefs::m_bool_prefs[NumBoolPrefs] = {
   {_T("ShowFindToolBarOnOpen"), false, ptApplication},      // application
   {_T("NotesWordWrap"), false, ptApplication},              // application
   {_T("LockDBOnIdleTimeout"), true, ptDatabase},            // database
-  {_T("HighlightChanges"), true, ptApplication},            // application
   {_T("HideSystemTray"), false, ptApplication},             // application
   {_T("UsePrimarySelectionForClipboard"), false, ptApplication}, // application
   {_T("CopyPasswordWhenBrowseToURL"), false, ptDatabase},   // database

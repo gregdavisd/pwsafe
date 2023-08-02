@@ -85,8 +85,6 @@ public:
   void SetFilterState(bool bState);
   bool WasLabelEdited() {return m_bEditLabelCompleted;};
   void SetUpFont();
-  void SetHighlightChanges(bool bvalue)
-  {m_bUseHighLighting = bvalue;}
   HTREEITEM FindItem(const CString &path, HTREEITEM hRoot);
   const StringX &GetDroppedFile() const {return m_droppedFile;}
 

@@ -841,7 +841,6 @@ void DboxMain::InitPasswordSafe()
 
   m_ctlItemList.SetExtendedStyle(dw_ExtendedStyle);
   m_ctlItemList.Initialize();
-  m_ctlItemList.SetHighlightChanges(prefs->GetPref(PWSprefs::HighlightChanges));
 
   // Override default HeaderCtrl ID of 0
   m_LVHdrCtrl.SetDlgCtrlID(IDC_LIST_HEADER);

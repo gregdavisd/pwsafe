@@ -900,9 +900,6 @@ void DboxMain::PostOpenProcessing()
   // Make row height update
   m_ctlItemList.UpdateRowHeight(true);
 
-  // Set highlighting - 
-  m_ctlItemTree.SetHighlightChanges(PWSprefs::GetInstance()->GetPref(PWSprefs::HighlightChanges));
-
   RefreshViews();
   SetInitialDatabaseDisplay();
   m_bDBNeedsReading = false;

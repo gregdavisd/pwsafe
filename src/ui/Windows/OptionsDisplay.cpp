@@ -47,7 +47,6 @@ COptionsDisplay::COptionsDisplay(CWnd *pParent, st_Opt_master_data *pOPTMD)
   m_ShowNotesInEdit = M_NotesShowInEdit();
   m_WordWrapNotes = M_WordWrapNotes();
   m_PreExpiryWarn = M_PreExpiryWarn();
-  m_HighlightChanges = M_HighlightChanges();
   m_EnableTransparency = M_EnableTransparency();
   m_PreExpiryWarnDays = M_PreExpiryWarnDays();
   m_TreeDisplayStatusAtOpen = M_TreeDisplayStatusAtOpen();
@@ -75,7 +74,6 @@ void COptionsDisplay::DoDataExchange(CDataExchange *pDX)
   DDX_Check(pDX, IDC_DEFNOTESWRAP, m_WordWrapNotes);
   DDX_Check(pDX, IDC_DEFENABLEGRIDLINES, m_EnableGrid);
   DDX_Check(pDX, IDC_PREWARNEXPIRY, m_PreExpiryWarn);
-  DDX_Check(pDX, IDC_HIGHLIGHTCHANGES, m_HighlightChanges);
   DDX_Check(pDX, IDC_ENABLETRANSPARENCY, m_EnableTransparency);
 
   DDX_Radio(pDX, IDC_TREE_DISPLAY_COLLAPSED, m_TreeDisplayStatusAtOpen); // only first!
@@ -200,7 +198,6 @@ LRESULT COptionsDisplay::OnQuerySiblings(WPARAM wParam, LPARAM )
           (m_PreExpiryWarn            == TRUE &&
            M_PreExpiryWarnDays()      != m_PreExpiryWarnDays)      ||
           M_TreeDisplayStatusAtOpen() != m_TreeDisplayStatusAtOpen ||
-          M_HighlightChanges()        != m_HighlightChanges        ||
           M_EnableTransparency()      != m_EnableTransparency      ||
           M_PercentTransparency()     != m_PercentTransparency)
         return 1L;
@@ -228,7 +225,6 @@ BOOL COptionsDisplay::OnApply()
   M_NotesShowInEdit() = m_ShowNotesInEdit;
   M_WordWrapNotes() = m_WordWrapNotes;
   M_PreExpiryWarn() = m_PreExpiryWarn;
-  M_HighlightChanges() = m_HighlightChanges;
   M_EnableTransparency() = m_EnableTransparency;
   M_PreExpiryWarnDays() = m_PreExpiryWarnDays;
   M_TreeDisplayStatusAtOpen() = m_TreeDisplayStatusAtOpen;

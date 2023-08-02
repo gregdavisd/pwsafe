@@ -42,7 +42,6 @@ protected:
   BOOL m_ShowNotesInEdit;
   BOOL m_WordWrapNotes;
   BOOL m_PreExpiryWarn;
-  BOOL m_HighlightChanges;
   BOOL m_EnableTransparency;
   int m_TreeDisplayStatusAtOpen;
   int m_PreExpiryWarnDays;

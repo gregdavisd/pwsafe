@@ -120,7 +120,7 @@ public:
     MultipleInstances, ShowDragbar,
     ClearClipboardOnMinimize, ClearClipboardOnExit,
     ShowFindToolBarOnOpen, NotesWordWrap, LockDBOnIdleTimeout,
-    HighlightChanges, HideSystemTray,
+    HideSystemTray,
     UsePrimarySelectionForClipboard,  // Only under X-Windows
     CopyPasswordWhenBrowseToURL,
     UseAltAutoType,  // Only under X-Windows

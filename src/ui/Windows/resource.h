@@ -721,7 +721,6 @@
 #define IDC_STATIC_DRAGEMAIL            1394
 #define IDC_ENTRYSTATUSRULE             1395
 #define IDC_ENTRYSTATUS1                1396
-#define IDC_HIGHLIGHTCHANGES            1397
 #define IDC_IMPORT_PSWDS_ONLY           1398
 #define IDC_STATIC_OR                   1399
 #define IDC_STATIC_PWLEN                1400
